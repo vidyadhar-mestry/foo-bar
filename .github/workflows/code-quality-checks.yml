@@ -96,4 +96,4 @@ jobs:
           echo changed files: ${{ steps.changed-py-files.outputs.files }}
     - name: Running pylint
       if: steps.changed-py-files.outputs.any_changed == 'true'
-      run: pylint --disable=c0301,c0330 -c ${{ steps.changed-py-files.outputs.all_changed_files }}
+      run: pylint --disable=c0301,c0330 ${{ steps.changed-py-files.outputs.all_changed_files }}
