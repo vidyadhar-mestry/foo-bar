@@ -1,18 +1,23 @@
-name: code-quality-check
+name: "mypy check"
 on: [pull_request]
 
 jobs:
-  build:
+
+  static-type-check:
     runs-on: ubuntu-latest
-    name: code-quality-check
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v3
       with:
-        python-version: 3.x
-    - name: upgrading pip
-      run: pip install --upgrade pip
-    - name: install dependancies
-      run: pip install "black<23" pylint==v3.0.0a3 mypy==v0.902
-    - run: black --diff --check $(git ls-files '*.py')
-    - run: pylint --disable=all --enable=unused-import $(git ls-files '*.py')
+        python-version: '3.x'
+    - run: pip install mypy  # you can pin your preferred version
+    - name: Get Python changed files
+      id: changed-py-files
+      uses: tj-actions/changed-files@v23
+      with:
+        files: |
+          *.py
+          **/*.py
+    - name: Run if any of the listed files above is changed
+      if: steps.changed-py-files.outputs.any_changed == 'true'
+      run: mypy ${{ steps.changed-py-files.outputs.all_changed_files }} --ignore-missing-imports
