@@ -58,6 +58,7 @@ jobs:
       run: |
           pip install isort==5.12.0
           pwd
+          ls /home/runner/work/foo-bar/foo-bar/.isort.cfg
     - name: Get Python changed files
       id: changed-py-files
       uses: tj-actions/changed-files@v23
