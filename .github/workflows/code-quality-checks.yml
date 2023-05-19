@@ -41,9 +41,6 @@ jobs:
         files: |
           *.py
           **/*.py
-    - name: Echo file changes
-      run: |
-          echo changed files: ${{ steps.changed-py-files.outputs.files }}
     - name: Running black
       if: steps.changed-py-files.outputs.any_changed == 'true'
       run: black --diff --check ${{ steps.changed-py-files.outputs.all_changed_files }}
@@ -64,8 +61,6 @@ jobs:
         files: |
           *.py
           **/*.py
-    - name: Echo file changes
-      run: echo changed files: ${{ steps.changed-py-files.outputs.files }}
     - name: Running isort
       if: steps.changed-py-files.outputs.any_changed == 'true'
       run: isort --sp .isort.cfg -c ${{ steps.changed-py-files.outputs.all_changed_files }}
@@ -88,9 +83,6 @@ jobs:
         files: |
           *.py
           **/*.py
-    - name: Echo file changes
-      run: |
-          echo changed files: ${{ steps.changed-py-files.outputs.files }}
     - name: Running pylint
       if: steps.changed-py-files.outputs.any_changed == 'true'
       run: pylint --disable=c0301,c0330 ${{ steps.changed-py-files.outputs.all_changed_files }}
