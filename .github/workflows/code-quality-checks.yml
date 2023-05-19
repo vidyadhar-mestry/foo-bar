@@ -108,4 +108,4 @@ jobs:
           echo changed files: ${{ steps.changed-py-files.outputs.files }}
     - name: Running sqlfluff
       if: steps.changed-py-files.outputs.any_changed == 'true'
-      run: sqlfluff lint --config /sql/.sqlfluff --ignore parsing ${{ steps.changed-py-files.outputs.all_changed_files }}
+      run: sqlfluff lint --config sql/.sqlfluff --ignore parsing ${{ steps.changed-py-files.outputs.all_changed_files }}
