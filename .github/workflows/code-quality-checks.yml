@@ -54,7 +54,7 @@ jobs:
     - uses: actions/setup-python@v3
       with:
         python-version: '3.x'
-    - name: install black
+    - name: install isort
       run: |
           pip install isort==5.12.0
           pwd
@@ -69,6 +69,6 @@ jobs:
     - name: Echo file changes
       run: |
           echo changed files: ${{ steps.changed-py-files.outputs.files }}
-    - name: Running black
+    - name: Running isort
       if: steps.changed-py-files.outputs.any_changed == 'true'
       run: isort --sp .isort.cfg -c ${{ steps.changed-py-files.outputs.all_changed_files }}
