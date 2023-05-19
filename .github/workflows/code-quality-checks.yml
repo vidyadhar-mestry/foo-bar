@@ -72,3 +72,28 @@ jobs:
     - name: Running isort
       if: steps.changed-py-files.outputs.any_changed == 'true'
       run: isort --sp .isort.cfg -c ${{ steps.changed-py-files.outputs.all_changed_files }}
+  pylint-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    - name: install isort
+      run: |
+          pip install pylint==2.17.0
+          pwd
+          ls /home/runner/work/foo-bar/foo-bar
+    - name: Get Python changed files
+      id: changed-py-files
+      uses: tj-actions/changed-files@v23
+      with:
+        files: |
+          *.py
+          **/*.py
+    - name: Echo file changes
+      run: |
+          echo changed files: ${{ steps.changed-py-files.outputs.files }}
+    - name: Running pylint
+      if: steps.changed-py-files.outputs.any_changed == 'true'
+      run: pylint --disable=c0301,c0330 -c ${{ steps.changed-py-files.outputs.all_changed_files }}
