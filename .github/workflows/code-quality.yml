@@ -18,6 +18,9 @@ jobs:
         files: |
           *.py
           **/*.py
+    - name: Echo file changes
+      run: |
+          echo changed files: ${{ steps.changed-py-files.outputs.files }}
     - name: Run if any of the listed files above is changed
       if: steps.changed-py-files.outputs.any_changed == 'true'
       run: mypy ${{ steps.changed-py-files.outputs.all_changed_files }} --ignore-missing-imports
