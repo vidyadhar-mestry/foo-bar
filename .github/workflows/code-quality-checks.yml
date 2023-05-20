@@ -1,0 +1,111 @@
+name: "code-quality-check"
+on: [pull_request]
+
+jobs:
+
+  mypy-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    - name: install mypy
+      run: pip install mypy
+    - name: Get Python changed files
+      id: changed-py-files
+      uses: tj-actions/changed-files@v23
+      with:
+        files: |
+          *.py
+          **/*.py
+    - name: Echo file changes
+      run: |
+          echo changed files: ${{ steps.changed-py-files.outputs.files }}
+    - name: Running mypy
+      if: steps.changed-py-files.outputs.any_changed == 'true'
+      run: mypy ${{ steps.changed-py-files.outputs.all_changed_files }} --ignore-missing-imports
+  black-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    - name: install black
+      run: pip install black==23.1.0
+    - name: Get Python changed files
+      id: changed-py-files
+      uses: tj-actions/changed-files@v23
+      with:
+        files: |
+          *.py
+          **/*.py
+    - name: Running black
+      if: steps.changed-py-files.outputs.any_changed == 'true'
+      run: black --diff --check ${{ steps.changed-py-files.outputs.all_changed_files }}
+  isort-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    - name: install isort
+      run: |
+          pip install isort==5.12.0
+    - name: Get Python changed files
+      id: changed-py-files
+      uses: tj-actions/changed-files@v23
+      with:
+        files: |
+          *.py
+          **/*.py
+    - name: Running isort
+      if: steps.changed-py-files.outputs.any_changed == 'true'
+      run: isort --sp .isort.cfg -c ${{ steps.changed-py-files.outputs.all_changed_files }}
+  pylint-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    - name: install pylint
+      run: |
+          pip install pylint==2.17.0
+          pwd
+          ls /home/runner/work/foo-bar/foo-bar
+    - name: Get Python changed files
+      id: changed-py-files
+      uses: tj-actions/changed-files@v23
+      with:
+        files: |
+          *.py
+          **/*.py
+    - name: Running pylint
+      if: steps.changed-py-files.outputs.any_changed == 'true'
+      run: pylint --disable=c0301,c0330 ${{ steps.changed-py-files.outputs.all_changed_files }}
+  sqlfluff-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    - name: install sqlfluff
+      run: |
+          pip install sqlfluff==2.1.0
+    - name: Get Python changed files
+      id: changed-py-files
+      uses: tj-actions/changed-files@v23
+      with:
+        files: |
+          *.sql
+          **/*.sql
+    - name: Echo file changes
+      run: |
+          echo changed files: ${{ steps.changed-py-files.outputs.files }}
+    - name: Running sqlfluff
+      if: steps.changed-py-files.outputs.any_changed == 'true'
+      run: sqlfluff lint --config sql/.sqlfluff --ignore parsing ${{ steps.changed-py-files.outputs.all_changed_files }}
